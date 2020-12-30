@@ -3,7 +3,7 @@ n = int(input())
 arr = []
 dp = [(3,1)]
 
-for _ in range(n):`
+for _ in range(n):
     start_month, start_day, end_month, end_day = map(int, input().split())
 
     arr.append([(start_month,start_day), (end_month,end_day)])
