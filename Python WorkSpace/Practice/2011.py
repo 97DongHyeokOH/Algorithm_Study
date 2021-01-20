@@ -27,7 +27,6 @@ for idx in range(1, len(code)):
         continue
     
     dp[idx][0] = dp[idx-1][0] + dp[idx-1][1]
-
     dp[idx][0] %= 1000000
 
 result = sum(dp.pop()) % 1000000
