@@ -28,9 +28,8 @@ def solution(start, cur):
             nx = x + dx[i]
 
             if(pos(ny, nx)):
-                visit[ny][nx] = True
-
                 if(arr[ny][nx] == 0 or arr[ny][nx] == cur):
+                    visit[ny][nx] = True
                     q.append((ny, nx, cnt+1))
                 elif(arr[ny][nx] < cur):
                     heapq.heappush(hq, (cnt+1, ny, nx))
