@@ -25,44 +25,47 @@
 
 #     return result
 
+# def solution(k, room_number):
+#     room = [[0, i+1] for i in range(k+2)]
+#     result = []
+
+#     for i in room_number:
+#         if(room[i][0]):
+#             idx = room[i][1]
+#             temp = [i]
+#             while(room[idx][0]):
+#                 temp.append(idx)
+#                 idx = room[idx][1]
+#             room[idx][0] = 1
+#             result.append(idx)
+#             for t in temp:
+#                 room[t][1] = idx+1
+#         else:
+#             result.append(i)
+#             room[i][0] = 1
+
+#     return result
+
+import sys
+sys.setrecursionlimit(1000000)
+
+
+def find(room, rooms):
+    if(room not in rooms):
+        rooms[room] = room + 1
+        return room
+
+    empty = find(rooms[room], rooms)
+    rooms[room] = empty + 1
+    return empty
+
+
 def solution(k, room_number):
-    room = [[0, i+1] for i in range(k+2)]
-    result = []
+    answer = []
+    rooms = dict()
 
-    for i in room_number:
-        if(room[i][0]):
-            idx = room[i][1]
-            temp = [i]
-            while(room[idx][0]):
-                temp.append(idx)
-                idx = room[idx][1]
-            room[idx][0] = 1
-            result.append(idx)
-            for t in temp:
-                room[t][1] = idx+1
-        else:
-            result.append(i)
-            room[i][0] = 1
-        # idx = room[i][1]
-        # temp = []
-        # while(room[idx][0]):
-        #     temp.append(idx)
-        #     if(idx == room[idx][1]):
-        #         room[idx][1] = idx+1
-        #         idx += 1
-        #     else:
-        #         idx = room[idx][1]
-        # room[idx][0] = 1
-        # result.append(idx)
-        # if(idx == i):
-        #     room[idx][1] += 1
-        # else:
-        #     for j in temp:
-        #         room[j][1] = idx
-        print(i)
-        print(room)
+    for room in room_number:
+        empty = find(room, rooms)
+        answer.append(empty)
 
-    return result
-
-
-print(solution(10, [1, 3, 4, 1, 3, 1]))
+    return answer
