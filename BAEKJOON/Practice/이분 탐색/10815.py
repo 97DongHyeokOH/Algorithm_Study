@@ -1,5 +1,7 @@
 import sys
 
+# card_list의 원소들을 card에서 찾는 이분 탐색
+
 
 def binary_search(n):
     start = 0
