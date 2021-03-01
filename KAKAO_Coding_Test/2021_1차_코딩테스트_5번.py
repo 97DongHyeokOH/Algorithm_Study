@@ -50,3 +50,6 @@ def solution(play_time, adv_time, logs):
         result += str(i) + ':'
 
     return result.rstrip(':')
+
+
+sss
