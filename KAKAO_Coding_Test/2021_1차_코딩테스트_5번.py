@@ -18,20 +18,19 @@ def solution(play_time, adv_time, logs):
         start_arr[start] += 1
         end_arr[end] += 1
 
-    time[0] = start_arr[0] - end_arr[0]
+    time[0] = 0
 
     for idx in range(1, play+1):
-        time[idx] = time[idx-1] + start_arr[idx] - end_arr[idx]
+        time[idx] = time[idx-1] + start_arr[idx-1] - end_arr[idx-1]
 
     temp = 0
     result = 0
     answer = 0
 
-    for idx in range(len(time)):
-        temp += time[idx]
-        time[idx] = temp
+    for idx in range(1, len(time)):
+        time[idx] = time[idx] + time[idx-1]
 
-    for idx in range(adv-1, play):
+    for idx in range(adv, play+1):
         if(result < time[idx]-time[idx-adv]):
             result = time[idx]-time[idx-adv]
             answer = idx - adv
@@ -52,4 +51,9 @@ def solution(play_time, adv_time, logs):
     return result.rstrip(':')
 
 
-sss
+a = "02:03:55"
+b = "00:14:15"
+c = ["01:20:15-01:45:14", "00:40:31-01:00:00",
+     "00:25:50-00:48:29", "01:30:59-01:53:29", "01:37:44-02:02:30"]
+
+print(solution(a, b, c))
