@@ -9,6 +9,7 @@ def solution(play_time, adv_time, logs):
     start_arr = [0]*(play+1)
     end_arr = [0]*(play+1)
 
+    # logs에 있는 값을 초 단위로 변환
     for log in logs:
         t = log.replace('-', ':').split(':')
 
@@ -18,15 +19,17 @@ def solution(play_time, adv_time, logs):
         start_arr[start] += 1
         end_arr[end] += 1
 
+    # idx-1 ~ idx까지 겹치는 시간 수
     time[0] = 0
 
     for idx in range(1, play+1):
         time[idx] = time[idx-1] + start_arr[idx-1] - end_arr[idx-1]
 
-    temp = 0
+    # result는 idx-adv ~ idx까지 시간 최대 값, answer는 초단위로 결과 값 저장
     result = 0
     answer = 0
 
+    # 0 ~ idx까지 시간을 합한 값
     for idx in range(1, len(time)):
         time[idx] = time[idx] + time[idx-1]
 
@@ -35,6 +38,7 @@ def solution(play_time, adv_time, logs):
             result = time[idx]-time[idx-adv]
             answer = idx - adv
 
+    # 결과 값을 HH:MM:SS로 변환
     result = ''
 
     t = []
@@ -49,11 +53,3 @@ def solution(play_time, adv_time, logs):
         result += str(i) + ':'
 
     return result.rstrip(':')
-
-
-a = "02:03:55"
-b = "00:14:15"
-c = ["01:20:15-01:45:14", "00:40:31-01:00:00",
-     "00:25:50-00:48:29", "01:30:59-01:53:29", "01:37:44-02:02:30"]
-
-print(solution(a, b, c))
