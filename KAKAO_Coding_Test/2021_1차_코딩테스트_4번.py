@@ -1,85 +1,79 @@
 import sys
 from collections import deque as dq
 
+# 다익스트라(Dijkstra) 알고리즘 인지 후 2일차 도전
+
 
 def solution(n, s, a, b, fares):
-    maps = [[0]*n for _ in range(n)]
-    distance = [[0, 0] for _ in range(n)]
-    distance[0][0] = 1
+    result = sys.maxsize
+    maps = [[sys.maxsize]*n for _ in range(n)]
+    distance = []
 
-    for i in fares:
-        maps[i[0]-1][i[1]-1] = i[2]
-        maps[i[1]-1][i[0]-1] = i[2]
-
-    def search(f, t):
-        dis = sys.maxsize
-        result = []
-
-        q = dq([[[f], 0]])
-
-        while(q):
-            l, d = q.popleft()
-
-            point = l[len(l)-1]
-
-            if(point == t):
-                if(dis > d):
-                    result = l
-                    dis = d
-                    continue
-
-            for idx in range(n):
-                temp = l.copy()
-                temp_d = d
-                if(maps[point][idx] and idx not in l):
-                    temp.append(idx)
-                    temp_d += maps[point][idx]
-                    q.append([temp, temp_d])
-
-        return result, dis
+    for f in fares:
+        maps[f[0]-1][f[1]-1] = f[2]
+        maps[f[1]-1][f[0]-1] = f[2]
 
     for i in range(n):
-        if(not distance[i][0]):
-            l, d = search(i, a-1)
+        maps[i][i] = 0
 
-            distance[i][0] = d
+    # 다익스트라 알고리즘
+    # i 노드에서 출발했을 때, 각 노드별 최단 거리 구하기
+    def go(i):
+        dis = [0]*n
+        visit = [False]*
 
-            for j in range(1, len(l)):
-                d -= maps[l[j]][l[j-1]]
-                distance[l[j]][0] = d
+        # 값이 최소인 index 찾기
+        def get_small():
+            num = sys.maxsize
+            idx = 0
 
-        if(not distance[i][1]):
-            l, d = search(i, b-1)
+            for k in range(n):
+                if(dis[k] < num and not visit[k]):
+                    num = dis[k]
+                    idx = k
 
-            distance[i][1] = d
+            return idx
 
-            for j in range(1, len(l)):
-                d -= maps[l[j]][l[j-1]]
-                distance[l[j]][1] = d
+        for j in range(n):
+            dis[j] = maps[i][j]
 
-    q = dq([[s-1, 0]])
-    answer = sys.maxsize
+        visit[i] = True
 
-    while(q):
-        l, d = q.popleft()
+        for j in range(n-2):
+            cur_idx = get_small()
+            visit[cur_idx] = True
+            for k in range(n):
+                if(not visit[k]):
+                    if(dis[cur_idx] + maps[cur_idx][k] < dis[k]):
+                        dis[k] = dis[cur_idx] + maps[cur_idx][k]
 
-        answer = min(answer, d + distance[l][0] + distance[l][1])
+        return dis
 
-        for i in range(n):
-            temp_d = d
-            if(maps[l][i] and distance[l][0] + distance[l][1] > maps[l][i] + distance[i][0] + distance[i][1]):
-                temp_d = d + maps[l][i]
-                temp = i
-                q.append([temp, temp_d])
+    for i in range(n):
+        distance.append(go(i))
 
-    return answer
+    for i in range(n):
+        result = min(result, distance[s-1][i] +
+                     distance[i][a-1] + distance[i][b-1])
 
+    return result
 
-n = 6
-s = 4
-a = 6
-b = 2
-fares = [[4, 1, 10], [3, 5, 24], [5, 6, 2], [3, 1, 41], [
-    5, 1, 24], [4, 6, 50], [2, 4, 66], [2, 3, 22], [1, 6, 25]]
+# 정답란에 있던 참고하기 좋은 코드
+# def solution(n, s, a, b, fares):
+#     d = [ [ 20000001 for _ in range(n) ] for _ in range(n) ]
+#     for x in range(n):
+#         d[x][x] = 0
+#     for x, y, c in fares:
+#         d[x-1][y-1] = c
+#         d[y-1][x-1] = c
 
-print(solution(n, s, a, b, fares))
+#     for i in range(n):
+#         for j in range(n):
+#             for k in range(n):
+#                 if d[j][k] > d[j][i] + d[i][k]:
+#                     d[j][k] = d[j][i] + d[i][k]
+
+#     minv = 40000002
+#     for i in range(n):
+#         minv = min(minv, d[s-1][i]+d[i][a-1]+d[i][b-1])
+#     return minv
