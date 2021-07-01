@@ -39,6 +39,7 @@ def operator_click(value):
     op = operator[value]
     if(op == 5):
         clear()
+        str_value.set(disValue)
     elif(disValue == 0):
         opPre = 0
     elif(opPre == 0):
@@ -52,14 +53,12 @@ def operator_click(value):
         elif(opPre == 2):
             disValue = stoValue - disValue
         elif(opPre == 3):
-            disValue /= stoValue
+            disValue = stoValue / disValue
         elif(opPre == 4):
             disValue *= stoValue
 
         str_value.set(disValue)
-        disValue = 0
-        stoValue = 0
-        opPre = 0
+        clear()
     else:
         clear()
 
