@@ -11,6 +11,7 @@ disValue = 0
 operator = {'+': 1, '-': 2, '/': 3, '*': 4, 'C': 5, '=': 6}
 stoValue = 0
 opPre = 0
+calc = ''
 # 결과 넣기(문자로 변환)
 str_value = tk.StringVar()  # 받아오기
 str_value.set(str(disValue))  # 선언된 변수 넣어주기
@@ -25,42 +26,31 @@ def number_click(value):
 
 
 def clear():
-    global disValue, stoValue, opPre
+    global disValue, stoValue, opPre, calc
 
     stoValue = 0
     disValue = 0
     opPre = 0
+    calc = ''
 
 
 def operator_click(value):
     # print('명령: ', value)
-    global disValue, stoValue, opPre
+    global disValue, stoValue, opPre, calc
 
     op = operator[value]
     if(op == 5):
         clear()
         str_value.set(disValue)
-    elif(disValue == 0):
-        opPre = 0
-    elif(opPre == 0):
-        opPre = op
-        stoValue = disValue
-        disValue = 0
-        str_value.set(disValue)
     elif(op == 6):
-        if(opPre == 1):
-            disValue += stoValue
-        elif(opPre == 2):
-            disValue = stoValue - disValue
-        elif(opPre == 3):
-            disValue = stoValue / disValue
-        elif(opPre == 4):
-            disValue *= stoValue
+        calc += str(disValue)
+        disValue = eval(calc)
 
         str_value.set(disValue)
-        clear()
+        calc = ''
     else:
-        clear()
+        calc += (str(disValue) + value)
+        disValue = 0
 
 
 def button_click(value):
