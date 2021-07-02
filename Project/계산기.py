@@ -26,17 +26,15 @@ def number_click(value):
 
 
 def clear():
-    global disValue, stoValue, opPre, calc
+    global disValue, calc
 
-    stoValue = 0
     disValue = 0
-    opPre = 0
     calc = ''
 
 
 def operator_click(value):
     # print('명령: ', value)
-    global disValue, stoValue, opPre, calc
+    global disValue, calc
 
     op = operator[value]
     if(op == 5):
