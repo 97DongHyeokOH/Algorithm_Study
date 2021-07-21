@@ -54,5 +54,6 @@ while(left <= right):
             result_num = num
         right = mid - 1
 
+
 print(result)
 print(' '.join(result_num))
