@@ -1,67 +1,78 @@
 import sys
-from collections import deque as dq
+from collections import deque
+
+# 판을 움직임
 
 
-# def goal_in(y, x, direc):  # direct -> 0: down 1: up 2: right 3: left
-def move(y, x, dy, dx):
+def move(y, x, i):
     cnt = 0
 
-    while(arr[y+dy][x+dx] != '#' and arr[y][x] != 'O'):
-        x += dx
-        y += dy
-        cnt += 1
+    while(1):
+        ny = y + dy[i]
+        nx = x + dx[i]
 
-    return y, x, cnt
-
-
-def solution():
-
-    while(q):
-        ry, rx, by, bx, cnt = q.popleft()
-
-        if(cnt >= 10):
-            break
-
-        for i in range(4):
-            n_ry, n_rx, r_cnt = move(ry, rx, dy[i], dx[i])
-            n_by, n_bx, b_cnt = move(by, bx, dy[i], dx[i])
-
-            if(arr[n_by][n_bx] == 'O'):
-                continue
-
-            if(arr[n_ry][n_rx] == 'O'):
-                return cnt+1
-
-            if(n_ry == n_by and n_rx == n_bx):
-                if(r_cnt < b_cnt):
-                    n_by -= dy[i]
-                    n_bx -= dx[i]
-                else:
-                    n_ry -= dy[i]
-                    n_rx -= dx[i]
-
-            if(not visit[n_ry][n_rx][n_by][n_bx]):
-                visit[n_ry][n_rx][n_by][n_bx] = True
-                q.append((n_ry, n_rx, n_by, n_bx, cnt+1))
-
-    return -1
+        if(board[ny][nx] == '#'):
+            return y, x, cnt
+        elif(board[ny][nx] == 'O'):
+            return -1, -1, cnt+1
+        else:
+            y += dy[i]
+            x += dx[i]
+            cnt += 1
 
 
-n, m = map(int, sys.stdin.readline().split())
+input = sys.stdin.readline
 
-arr = [list(sys.stdin.readline().rstrip()) for _ in range(n)]
+n, m = map(int, input().split())
+
+board = [list(input().rstrip()) for _ in range(n)]
+
+dq = deque()
+dy = [0, 0, -1, 1]
+dx = [-1, 1, 0, 0]
+# visit[ry][rx][by][bx] -> 빨간 공이 (ry, rx), 파란 공이 (by,bx)를 방문했는지 저장하는 list
 visit = [[[[False]*m for _ in range(n)] for _ in range(m)] for _ in range(n)]
 
-for j in range(m):
-    for i in range(n):
-        if(arr[i][j] == 'R'):
-            ry, rx = i, j
-        elif(arr[i][j] == 'B'):
-            by, bx = i, j
+# 최초의 빨간공의 위치와 파란공의 위치를 찾음
+for y in range(n):
+    for x in range(m):
+        if(board[y][x] == 'R'):
+            ry, rx = y, x
 
-dy = [1, -1, 0, 0]
-dx = [0, 0, 1, -1]
+        if(board[y][x] == 'B'):
+            by, bx = y, x
 
-q = dq([(ry, rx, by, bx, 0)])
+# deque로 bfs를 실행
+dq.append((0, ry, rx, by, bx))
 
-print(solution())
+while(dq):
+    cnt, ry, rx, by, bx = dq.popleft()
+
+    if(cnt >= 10):
+        break
+
+    for i in range(4):
+        nry, nrx, r_cnt = move(ry, rx, i)
+        nby, nbx, b_cnt = move(by, bx, i)
+        # 파란공이 구멍에 들어갔을 때
+        if(nby == -1 and nbx == -1):
+            continue
+        # 빨간공만 구멍에 들어갔을 때
+        if(nry == -1 and nrx == -1):
+            print(cnt+1)
+            exit(0)
+
+        # 2개의 구슬이 같은 경로로 이동한 경우 더 많이 움직인 구슬이 다른 구슬 뒤에 위치하게 된다.
+        if(nry == nby and nrx == nbx):
+            if(r_cnt > b_cnt):
+                nry -= dy[i]
+                nrx -= dx[i]
+            else:
+                nby -= dy[i]
+                nbx -= dx[i]
+
+        if(not visit[nry][nrx][nby][nbx]):
+            visit[nry][nrx][nby][nbx] = True
+            dq.append((cnt+1, nry, nrx, nby, nbx))
+
+print(-1)
